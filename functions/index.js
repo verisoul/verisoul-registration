@@ -1,9 +1,15 @@
-const functions = require("firebase-functions");
+const functions = require('firebase-functions');
+const express = require('express');
+const cors = require('cors')({origin: true});
+// const cors = require('cors')({origin: '*'});
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+const app = express();
+app.use(cors);
+
+app.post('/issue-credential', (req, res) => {
+    // do something here
+    res.status(200).send('OK');
+})
+
+
+exports.app = functions.https.onRequest(app);
