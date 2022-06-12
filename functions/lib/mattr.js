@@ -151,8 +151,30 @@ const sendDIDMessage = async (subjectDID, encryptedMsg) => {
 
 }
 
+const verifyCredential = async (presentation) => {
+    let jwtToken = await getOauthToken(process.env.MATTR_CLIENT_ID, process.env.MATTR_CLIENT_SECRET);
+
+    const resp = await fetch(
+        `${MTTR_BASE_URL}/presentations/verify`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${jwtToken}`
+            },
+            body: JSON.stringify({
+                presentation: presentation
+            })
+        }
+    );
+
+    const isVerified = await resp.json();
+    return isVerified;
+}
+
 exports.getDID = getDID;
 exports.issueVerifiableCredential = issueVerifiableCredential;
 exports.createDIDMessage = createDIDMessage;
 exports.encryptDIDMessage = encryptDIDMessage;
 exports.sendDIDMessage = sendDIDMessage;
+exports.verifyCredential = verifyCredential;

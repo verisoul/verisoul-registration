@@ -7,7 +7,8 @@ const {
     issueVerifiableCredential,
     createDIDMessage,
     encryptDIDMessage,
-    sendDIDMessage} = require('./lib/mattr');
+    sendDIDMessage,
+    verifyCredential} = require('./lib/mattr');
 
 const app = express();
 app.use(cors);
@@ -41,6 +42,15 @@ app.post('/offer-credential', async (req, res) => {
     res.status(200).send({
         status: "message sent"
     })
+})
+
+app.post('/verify-credential', async (req, res) => {
+    // Note: Must pass a credential presentation from SubjectDIDs wallet
+    // to be pass verification
+    let presentation = req.body?.presentation;
+    let isVerified = await verifyCredential(presentation);
+
+    res.status(200).send(isVerified)
 })
 
 exports.app = functions.https.onRequest(app);
