@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.js": "/static/js/main.be7b6427.chunk.js",
+    "main.js.map": "/static/js/main.be7b6427.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.40ce665e.js",
+    "runtime-main.js.map": "/static/js/runtime-main.40ce665e.js.map",
+    "static/js/2.6875730b.chunk.js": "/static/js/2.6875730b.chunk.js",
+    "static/js/2.6875730b.chunk.js.map": "/static/js/2.6875730b.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.37d448adbbc99120b70704048a62e6e0.js": "/precache-manifest.37d448adbbc99120b70704048a62e6e0.js",
+    "service-worker.js": "/service-worker.js",
+    "static/js/2.6875730b.chunk.js.LICENSE.txt": "/static/js/2.6875730b.chunk.js.LICENSE.txt",
+    "static/media/soulcred.pkpass": "/static/media/soulcred.5faa8eb5.pkpass",
+    "static/media/studentcred.pkpass": "/static/media/studentcred.d631113d.pkpass"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.40ce665e.js",
+    "static/js/2.6875730b.chunk.js",
+    "static/js/main.be7b6427.chunk.js"
+  ]
+}

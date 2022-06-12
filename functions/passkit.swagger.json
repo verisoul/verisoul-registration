@@ -1,0 +1,5453 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "PassKit Event Tickets API",
+    "description": {
+      "$ref": "description.md"
+    },
+    "termsOfService": "https://passkit.com/legal/terms-of-subscription-service/",
+    "version": "0.1-spec",
+    "contact": {
+      "name": "PassKit Support",
+      "url": "https://docs.passkit.io",
+      "email": "support@passkit.com"
+    }
+  },
+  "tags": [
+    {
+      "name": "Productions",
+      "description": "Productions are the highest level object which owns Ticket Types, Events and Tickets. Production instance needs to be created in advance if you are issuing ticket by `IssueTicket()`. If you issuing ticket through `IssueTicketById()` you can provide full data of Production with User Defined ID to auto create Production at ticket issue."
+    },
+    {
+      "name": "Venues",
+      "description": "Venue holds details about where the event takes place. Venues belong to the account and can be shared across Productions."
+    },
+    {
+      "name": "Ticket Types",
+      "description": "Ticket Type holds details about the ticket type, and links to the before & after redeem Pass Template Designs. Ticket Types belong to Production and can be reused within the same Production."
+    },
+    {
+      "name": "Events",
+      "description": "Event holds the event start & end date/time and venue details. Event is auto created at `IssueTicket()` or `IssueTicketById()` so you do not need to create an Event instance prior to ticket issue."
+    },
+    {
+      "name": "Tickets",
+      "description": "Ticket is a unique ticket instance and holds details about the event dates & times, venue, ticket holder and other relevant details pertaining to a ticket. There are 2 ways to issue a ticket: `IssueTicket()` and `IssueTicketById()`. `IssueTicket` method requires Production, Venue and Ticket Type IDs so those instances need to be created beforehand. `IssueTicketById` method can auto create Production, Venue and Ticket Type with full data and User Defined IDs. User Defined IDs can be reused to issue ticket for the same Production, Venue and Ticket Type."
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/eventTickets/event": {
+      "delete": {
+        "summary": "Delete Event",
+        "description": "Deletes an existing Event. Requires ID to be set. Deleting an Event results in all tickets for the Event being deleted and invalidated in the customers Mobile Wallet; rendering them unusable. This method is irreversible and should be used with care.",
+        "operationId": "EventTickets_deleteEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEvent"
+            }
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      },
+      "post": {
+        "summary": "Create Event",
+        "description": "Creates a new Event instance for a Production. You don't need to pass in the full Production and Venue objects if they already exist, you can provide just the id and it will work fine.",
+        "operationId": "EventTickets_createEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioId"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEvent"
+            }
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      },
+      "put": {
+        "summary": "Update Event",
+        "description": "Fully updates an existing Event. Requires ID to be set. Note1: changes will update & affect all existing tickets related to this event. Note2: Production and Venue cannot be changed from this endpoint.",
+        "operationId": "EventTickets_updateEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEvent"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEvent"
+            }
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      },
+      "patch": {
+        "summary": "Patch Event",
+        "description": "Partially updates an existing Event. Requires ID to be set. Note: changes will update & affect all existing tickets related to this event.",
+        "operationId": "EventTickets_patchEvent",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEvent"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEvent"
+            }
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/eventTickets/event/details": {
+      "get": {
+        "summary": "Get Event by Start Date & Venue",
+        "description": "Gets an existing Event by event details.",
+        "operationId": "EventTickets_getEventByStartDateAndVenue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEvent"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productionId",
+            "description": "Production ID. Required if productionUid is not provided.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "productionUid",
+            "description": "Production UID. Required if productionId is not provided.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "venueId",
+            "description": "Venue ID. Required if venueUid is not provided.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "venueUid",
+            "description": "Venue UID. Required if venueId is not provided.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "scheduledStartDate",
+            "description": "Event scheduled start date.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/eventTickets/event/id/{id}": {
+      "get": {
+        "summary": "Get Event by ID",
+        "description": "Gets an existing Event by ID.",
+        "operationId": "EventTickets_getEventById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEvent"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The unique identifier to an object or record.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/eventTickets/events/list": {
+      "post": {
+        "summary": "List Events",
+        "description": "Lists all Events for a Production.",
+        "operationId": "EventTickets_listEvents",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/event_ticketsEventListResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of event_ticketsEventListResponse"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEventListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/eventTickets/orderNumber": {
+      "delete": {
+        "summary": "Delete Tickets by Order Number",
+        "description": "Delete existing Ticketd by Order Number. Invalidates the ticket in the customers Mobile Wallet; rendering it useless. This method is irreversible and should be used with care.",
+        "operationId": "EventTickets_deleteTicketsByOrderNumber",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsOrderNumberRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/pass": {
+      "post": {
+        "summary": "Get Event Ticket Pass",
+        "description": "Retrieves digital event ticket pass(es) in the requested format based on the index provided. Only one of ticketId, ticketNumber or orderNumber is required.",
+        "operationId": "EventTickets_getEventTicketPass",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioPassBundles"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEventTicketPassRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/production": {
+      "delete": {
+        "summary": "Delete Production",
+        "description": "Deletes an existing Production. Deleting a Production results in all Ticket Types, Events & Tickets for the Production being deleted and invalidated in the customers Mobile Wallet; rendering them unusable. This method is irreversible and should be used with care.",
+        "operationId": "EventTickets_deleteProduction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsProduction"
+            }
+          }
+        ],
+        "tags": [
+          "Productions"
+        ]
+      },
+      "post": {
+        "summary": "Create Production",
+        "description": "Creates a new Production.",
+        "operationId": "EventTickets_createProduction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioId"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsProduction"
+            }
+          }
+        ],
+        "tags": [
+          "Productions"
+        ]
+      },
+      "put": {
+        "summary": "Update Production",
+        "description": "Fully updates an existing Production. All required fields are required. Note: changes will update and affect all existing Events & Tickets related to this Production.",
+        "operationId": "EventTickets_updateProduction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsProduction"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsProduction"
+            }
+          }
+        ],
+        "tags": [
+          "Productions"
+        ]
+      },
+      "patch": {
+        "summary": "Patch Production",
+        "description": "Partially updates an existing Production. Only id/uid and updating fields are required. Note: changes will update and affect all existing Events & Tickets related to this Production.",
+        "operationId": "EventTickets_patchProduction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsProduction"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsProduction"
+            }
+          }
+        ],
+        "tags": [
+          "Productions"
+        ]
+      }
+    },
+    "/eventTickets/production/copy": {
+      "post": {
+        "summary": "Copy Production",
+        "description": "Copies an existing Production.",
+        "operationId": "EventTickets_copyProduction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioId"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsProductionCopyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Productions"
+        ]
+      }
+    },
+    "/eventTickets/production/{classId}/analytics": {
+      "get": {
+        "summary": "Get Production Analytics",
+        "description": "Retrieves Production specific analytics data.",
+        "operationId": "EventTickets_getAnalytics",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsProductionAnalyticsResponse"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "classId",
+            "description": "The ID of the highest level element in the protocol. For Membership this is the Program ID, for coupons this is the Campaign ID, For Event Tickets this is Production, For Flight this is CarrierCode.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "protocol",
+            "description": "The protocol that you are requesting analytics for, i.e. MEMBERSHIP, SINGLE_USE_COUPON, EVENT_TICKETS, FLIGHTS, etc.\n\n - RAW_PROTOCOL: Reserved for raw pass protocol.\n - V1_PROTOCOL: Reserved for migrating legacy v1 passes.\n - FLIGHT_PROTOCOL: Flights protocol: https://docs.passkit.io/protocols/boarding/\n - MEMBERSHIP: Values 100 onwards are for PassKit generic protocols.\nGeneric Membership protocol: https://docs.passkit.io/protocols/member/\n - SINGLE_USE_COUPON: Single Use Coupon protocol: https://docs.passkit.io/protocols/coupon/\n - EVENT_TICKETING: Event Ticket protocol: https://docs.passkit.io/protocols/event/",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PASS_PROTOCOL_DO_NOT_USE",
+              "RAW_PROTOCOL",
+              "V1_PROTOCOL",
+              "FLIGHT_PROTOCOL",
+              "MEMBERSHIP",
+              "SINGLE_USE_COUPON",
+              "EVENT_TICKETING"
+            ],
+            "default": "PASS_PROTOCOL_DO_NOT_USE"
+          },
+          {
+            "name": "period",
+            "description": "The Period to group the response data by: per DAY, MONTH or YEAR.\n\n - DAY: Show individual data by day.\n - MONTH: Default response will be in months.\n - YEAR: Show individual data by year.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "DAY",
+              "MONTH",
+              "YEAR"
+            ],
+            "default": "DAY"
+          },
+          {
+            "name": "startDate",
+            "description": "Start date sets the oldest date of the data to be shown.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "description": "End date sets the latest date of the data to be shown.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "timezone",
+            "description": "Timezone in IANA format; defaults to UTC if not provided.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "coupon.offerId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "flight.flightNumber",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "flight.departureDate.year",
+            "description": "Year.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "flight.departureDate.month",
+            "description": "Month.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "flight.departureDate.day",
+            "description": "Day.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "flight.boardingPoint",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "flight.deplaningPoint",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "eventTicket.ticketTypeId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "eventTicket.ticketTypeUid",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "eventTicket.venueId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "eventTicket.venueUid",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "eventTicket.eventId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Productions"
+        ]
+      }
+    },
+    "/eventTickets/production/{id}": {
+      "get": {
+        "summary": "Get Production",
+        "description": "Gets an existing Production.",
+        "operationId": "EventTickets_getProduction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsProduction"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The unique identifier to an object or record.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Productions"
+        ]
+      }
+    },
+    "/eventTickets/productions": {
+      "post": {
+        "summary": "List Productions",
+        "description": "Lists all Productions for the logged in user.",
+        "operationId": "EventTickets_listProductions",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/event_ticketsProduction"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of event_ticketsProduction"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ioFilters"
+            }
+          }
+        ],
+        "tags": [
+          "Productions"
+        ]
+      }
+    },
+    "/eventTickets/ticket": {
+      "delete": {
+        "summary": "Delete Ticket",
+        "description": "Delete an existing Ticket by Id or Ticket Number. Invalidates the ticket in the customers Mobile Wallet; rendering it useless. This method is irreversible and should be used with care. Requires ticket.ID to be set, or ticket.ticketNumber + ticket.event.production.id to be set.",
+        "operationId": "EventTickets_deleteTicket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketId"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      },
+      "post": {
+        "summary": "Issue Ticket",
+        "description": "Creates a new unique Ticket record by PassKit IDs. If the Event does not yet exist, it will automatically be created. The combination of event.production.id, event.startDate, event.venue.id & ticket.ticketTypeUid is enforced as unique for Events.",
+        "operationId": "EventTickets_issueTicket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioId"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsIssueTicketRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      },
+      "put": {
+        "summary": "Update Ticket",
+        "description": "Updates an existing Ticket. Requires ticket.ID to be set, or ticket.ticketNumber + ticket.event.production.id to be set.",
+        "operationId": "EventTickets_updateTicket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioId"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicket"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/ticket/id": {
+      "post": {
+        "summary": "Issue Ticket",
+        "description": "Creates a new unique Ticket record by User Defined IDs. User Defined IDs for Production, Venue and TicketType are required. If the Event does not yet exist, it will automatically be created. The combination of event.production.id, event.startDate, event.venue.id & ticket.ticketTypeUid is enforced as unique for Events.",
+        "operationId": "EventTickets_issueTicketById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsIssueTicketResponseIds"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicket"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/ticket/id/{id}": {
+      "get": {
+        "summary": "Get Ticket by ID",
+        "description": "Gets a Ticket record by ID.",
+        "operationId": "EventTickets_getTicketById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicket"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The unique identifier to an object or record.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/ticket/person": {
+      "patch": {
+        "summary": "Update Personal Information",
+        "description": "Updates personal information of a event ticket holder",
+        "operationId": "EventTickets_patchPerson",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioId"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsEventTicketPerson"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/ticket/redeem": {
+      "put": {
+        "summary": "Redeem Ticket",
+        "description": "Redeems an existing Ticket. Use this endpoint when you want to capture redemption data and trigger the switch to the redeemed design of the Ticket.",
+        "operationId": "EventTickets_redeemTicket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioId"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsRedeemTicketRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/ticket/ticketNumber": {
+      "get": {
+        "summary": "Get Ticket by Ticket Number",
+        "description": "Gets a Ticket record by Ticket Number.",
+        "operationId": "EventTickets_getTicketByTicketNumber",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicket"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productionId",
+            "description": "Production ID. Required if productionUid is not provided.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "productionUid",
+            "description": "Production UID. Required if productionId is not provided.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ticketNumber",
+            "description": "Ticket Number.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/ticket/validate": {
+      "put": {
+        "summary": "Validate Ticket",
+        "description": "Validates an existing Ticket. Use this endpoint when you want to check validity of a ticket. Tickets can be validated multiple times. Requires ticket.id to be set, or ticket.ticketNumber + ticket.event.production.id to be set.",
+        "operationId": "EventTickets_validateTicket",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsValidateTicketResponse"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsValidateTicketRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/ticketType": {
+      "delete": {
+        "summary": "Delete Ticket Type",
+        "description": "Deletes an existing Ticket Type by ID, or User Defined ID (and Production ID). Deleting a Ticket Type results in the tickets for the Ticket Type being deleted and invalidated in the customers Mobile Wallet; rendering them unusable. This method is irreversible and should be used with care.",
+        "operationId": "EventTickets_deleteTicketType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketType"
+            }
+          }
+        ],
+        "tags": [
+          "Ticket Types"
+        ]
+      },
+      "post": {
+        "summary": "Ticket Type",
+        "description": "Creates a new Ticket Type.",
+        "operationId": "EventTickets_createTicketType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioId"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketType"
+            }
+          }
+        ],
+        "tags": [
+          "Ticket Types"
+        ]
+      },
+      "put": {
+        "summary": "Update Ticket Type",
+        "description": "Updates an existing Ticket Type. Note: changes will update & affect all existing Tickets related to this Ticket Type.",
+        "operationId": "EventTickets_updateTicketType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketType"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketType"
+            }
+          }
+        ],
+        "tags": [
+          "Ticket Types"
+        ]
+      },
+      "patch": {
+        "summary": "Patch Ticket Type",
+        "description": "Partially updates an existing Ticket Type. Note: changes will update & affect all existing Tickets related to this Ticket Type.",
+        "operationId": "EventTickets_patchTicketType",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketType"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketType"
+            }
+          }
+        ],
+        "tags": [
+          "Ticket Types"
+        ]
+      }
+    },
+    "/eventTickets/ticketType/id/{id}": {
+      "get": {
+        "summary": "Get Ticket Type by PassKit ID",
+        "description": "Gets an existing Ticket Type by ID.",
+        "operationId": "EventTickets_getTicketTypeById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketType"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The unique identifier to an object or record.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Ticket Types"
+        ]
+      }
+    },
+    "/eventTickets/ticketType/uid/{productionId}/{uid}": {
+      "get": {
+        "summary": "Get Ticket Type by User Defined ID",
+        "description": "Gets an existing Ticket Type by User Defined ID (and Production ID).",
+        "operationId": "EventTickets_getTicketTypeByUserDefinedId",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketType"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productionId",
+            "description": "The production id of the ticket type.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "uid",
+            "description": "User defined id of the ticket type.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Ticket Types"
+        ]
+      }
+    },
+    "/eventTickets/ticketTypes/{productionId}": {
+      "post": {
+        "summary": "List Ticket Types",
+        "description": "Lists all Ticket Types for a Production.",
+        "operationId": "EventTickets_listTicketTypes",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/event_ticketsTicketType"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of event_ticketsTicketType"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productionId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "filters": {
+                  "$ref": "#/definitions/ioFilters"
+                }
+              }
+            }
+          }
+        ],
+        "tags": [
+          "Ticket Types"
+        ]
+      }
+    },
+    "/eventTickets/tickets/count": {
+      "post": {
+        "summary": "Count Tickets",
+        "description": "Count all tickets for a Production, Event, Ticket Type and / or Start Date",
+        "operationId": "EventTickets_countTickets",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioCount"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/tickets/list": {
+      "post": {
+        "summary": "List Tickets",
+        "description": "List all tickets for a Production. Supports pagination.",
+        "operationId": "EventTickets_listTickets",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/event_ticketsTicketLimitedFields"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of event_ticketsTicketLimitedFields"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTicketListRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/tickets/orderNumber": {
+      "get": {
+        "summary": "Get Tickets by Order Number",
+        "description": "Gets Ticket records by Order Number.",
+        "operationId": "EventTickets_getTicketsByOrderNumber",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsTickets"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "productionId",
+            "description": "Production ID. Required if productionUid is not provided.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "productionUid",
+            "description": "Production UID. Required if productionId is not provided.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "orderNumber",
+            "description": "Order Number.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/tickets/orderNumber/redeem": {
+      "put": {
+        "summary": "Redeem Tickets by Order Number",
+        "description": "Redeems existing Tickets by Order Number. Use this endpoint when you want to capture redemption data and trigger the switch to the redeemed design of the Ticket.",
+        "operationId": "EventTickets_redeemTicketsByOrderNumber",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioIds"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsRedeemByOrderNumber"
+            }
+          }
+        ],
+        "tags": [
+          "Tickets"
+        ]
+      }
+    },
+    "/eventTickets/venue": {
+      "delete": {
+        "summary": "Delete Venue",
+        "description": "Deletes an existing Venue. Deleting a Venue, Events & Tickets for the Venue being deleted and invalidated in the customers Mobile Wallet; rendering them unusable. This method is irreversible and should be used with care.",
+        "operationId": "EventTickets_deleteVenue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsVenue"
+            }
+          }
+        ],
+        "tags": [
+          "Venues"
+        ]
+      },
+      "post": {
+        "summary": "Create Venue",
+        "description": "Creates a new Venue.",
+        "operationId": "EventTickets_createVenue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ioId"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsVenue"
+            }
+          }
+        ],
+        "tags": [
+          "Venues"
+        ]
+      },
+      "put": {
+        "summary": "Update Venue",
+        "description": "Updates an existing Venue. Requires ID or User Defined ID to be set. Note: changes will update and affect all existing Events & Tickets related to this Venue.",
+        "operationId": "EventTickets_updateVenue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsVenue"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsVenue"
+            }
+          }
+        ],
+        "tags": [
+          "Venues"
+        ]
+      },
+      "patch": {
+        "summary": "Patch Venue",
+        "description": "Partially updates an existing Venue. Requires ID or User Defined ID to be set. Note: changes will update and affect all existing Events & Tickets related to this Venue.",
+        "operationId": "EventTickets_patchVenue",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsVenue"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/event_ticketsVenue"
+            }
+          }
+        ],
+        "tags": [
+          "Venues"
+        ]
+      }
+    },
+    "/eventTickets/venue/{id}": {
+      "get": {
+        "summary": "Get Venue",
+        "description": "Gets an existing Venue by PassKit ID or User Defined ID.",
+        "operationId": "EventTickets_getVenueById",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/event_ticketsVenue"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "The unique identifier to an object or record.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Venues"
+        ]
+      }
+    },
+    "/eventTickets/venues": {
+      "post": {
+        "summary": "List Venues",
+        "description": "Lists all Venues for the logged in user.",
+        "operationId": "EventTickets_listVenues",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/event_ticketsVenue"
+                },
+                "error": {
+                  "$ref": "#/definitions/googlerpcStatus"
+                }
+              },
+              "title": "Stream result of event_ticketsVenue"
+            }
+          },
+          "400": {
+            "description": "Returned when wrong user input is provided.",
+            "schema": {}
+          },
+          "401": {
+            "description": "Returned when the user is unauthorized.",
+            "schema": {}
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "500": {
+            "description": "Returned when there is an unexpected error.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "503": {
+            "description": "Server is unavailable. Back off for 250ms and repeat request until successful.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ioFilters"
+            }
+          }
+        ],
+        "tags": [
+          "Venues"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "event_ticketsEvent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated event id (22 characters). No writable."
+        },
+        "production": {
+          "$ref": "#/definitions/event_ticketsProduction",
+          "description": "The production that the event belongs to. In case of a create, only the production id needs to be provided."
+        },
+        "venue": {
+          "$ref": "#/definitions/event_ticketsVenue",
+          "description": "The venue details. In case of a create, venue.id or venue.uid needs to be provided. If the venue does not exist it will be created."
+        },
+        "doorsOpen": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date/time when the doors open at the venue."
+        },
+        "scheduledStartDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The scheduled date/time when the event starts. If the event spans multiple days, it should be the start date/time on the first day. Tickets can only be issued for events that are within 90 days of the ticket issue date."
+        },
+        "actualStartDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The new date/time when the event starts. This field can be used when you need to set a new event start data/time."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date/time when the event ends. If the event spans multiple days, it should be the end date/time on the last day."
+        },
+        "relevantDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional relevant date for when the event starts. Used by Apple Wallet to trigger a lock-screen notification that there is an event coming up. Google Pay will always notify the user 3 hours before the event start date that they have an upcoming event."
+        },
+        "quota": {
+          "$ref": "#/definitions/ioQuota",
+          "description": "The quota for the event. If set to 0, then it is unlimited. If the quota is reached no new tickets can be issued."
+        },
+        "metrics": {
+          "$ref": "#/definitions/ioMetrics",
+          "description": "Performance analytics for the event. Not writable.",
+          "readOnly": true
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the event was created. Not writable.",
+          "readOnly": true
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the event updated. Not writable.",
+          "readOnly": true
+        }
+      },
+      "description": "Event is an instance of a Production; an event is showing; it holds the event start & end date/time and venue details.",
+      "title": "Event",
+      "required": [
+        "production",
+        "venue",
+        "startDate"
+      ]
+    },
+    "event_ticketsEventFilterByVenueAndStart": {
+      "type": "object",
+      "properties": {
+        "venueId": {
+          "type": "string",
+          "description": "Venue ID. Required if venueUid is not provided."
+        },
+        "venueUid": {
+          "type": "string",
+          "description": "Venue UID. Required if venueId is not provided."
+        },
+        "scheduledStartDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Event scheduled start date time."
+        }
+      },
+      "description": "Used to filter tickets for a specific event.",
+      "title": "Event Filter By Id",
+      "required": [
+        "venueId",
+        "venueUid",
+        "startDate"
+      ]
+    },
+    "event_ticketsEventLimitedFieldsRequest": {
+      "type": "object",
+      "properties": {
+        "productionId": {
+          "type": "string",
+          "description": "PassKit generated production id (22 characters)."
+        },
+        "venueId": {
+          "type": "string",
+          "description": "PassKit generated venue id (22 characters)."
+        },
+        "doorsOpen": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date/time when the doors open at the venue."
+        },
+        "scheduledStartDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The scheduled date/time when the event starts. If the event spans multiple days, it should be the start date/time on the first day. Tickets can only be issued for events that are within 90 days of the ticket issue date."
+        },
+        "actualStartDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The new date/time when the event starts. This field can be used when you need to set a new event start data/time."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date/time when the event ends. If the event spans multiple days, it should be the end date/time on the last day."
+        },
+        "relevantDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional relevant date for when the event starts. Used by Apple Wallet to trigger a lock-screen notification that there is an event coming up. Google Pay will always notify the user 3 hours before the event start date that they have an upcoming event."
+        },
+        "quota": {
+          "$ref": "#/definitions/ioQuota",
+          "description": "The quota for the event. If set to 0, then it is unlimited. If the quota is reached no new tickets can be issued."
+        },
+        "metrics": {
+          "$ref": "#/definitions/ioMetrics",
+          "description": "Performance analytics for the event. Not writable."
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the event was created. Not writable."
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the event updated. Not writable."
+        }
+      },
+      "description": "Event is an instance of a Production; an event is showing; it holds the event start & end date/time and venue details.",
+      "title": "Event (Light ver)",
+      "required": [
+        "productionId",
+        "venueId",
+        "scheduledStartDate"
+      ]
+    },
+    "event_ticketsEventLimitedFieldsResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated event id (22 characters)."
+        },
+        "scheduledStartDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The scheduled date/time when the event starts. If the event spans multiple days, it should be the start date/time on the first day. Tickets can only be issued for events that are within 90 days of the ticket issue date."
+        },
+        "actualStartDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The new date/time when the event starts. This field can be used when you need to set a new event start data/time."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date/time when the event ends. If the event spans multiple days, it should be the end date/time on the last day."
+        }
+      },
+      "description": "Event is an instance of a Production; an event is showing; it holds the event start & end date/time and venue details.",
+      "title": "Event (Light ver)"
+    },
+    "event_ticketsEventListRequest": {
+      "type": "object",
+      "properties": {
+        "productionId": {
+          "type": "string",
+          "description": "Production ID. Required if productionUid is not provided."
+        },
+        "productionUid": {
+          "type": "string",
+          "description": "Production UID. Required if productionId is not provided."
+        },
+        "venueId": {
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "#/definitions/ioFilters"
+        }
+      },
+      "description": "Used to list events in the production.",
+      "title": "Event List Request",
+      "required": [
+        "production"
+      ]
+    },
+    "event_ticketsEventListResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated event id (22 characters)."
+        },
+        "production": {
+          "$ref": "#/definitions/event_ticketsProductionLimitedFieldsResponse",
+          "description": "The production that the event belongs to. In case of a create, only the production id needs to be provided."
+        },
+        "venue": {
+          "$ref": "#/definitions/event_ticketsVenueLimitedFieldsResponse",
+          "description": "The venue information. In case of a create, venue.id or venue.uid needs to be provided. If the venue does not exist it will be created."
+        },
+        "doorsOpen": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date/time when the doors open at the venue."
+        },
+        "scheduledStartDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The scheduled date/time when the event starts. If the event spans multiple days, it should be the start date/time on the first day. Tickets can only be issued for events that are within 90 days of the ticket issue date."
+        },
+        "actualStartDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The new date/time when the event starts. This field can be used when you need to set a new event start data/time."
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date/time when the event ends. If the event spans multiple days, it should be the end date/time on the last day."
+        },
+        "relevantDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional relevant date for when the event starts. Used by Apple Wallet to trigger a lock-screen notification that there is an event coming up. Google Pay will always notify the user 3 hours before the event start date that they have an upcoming event."
+        },
+        "quota": {
+          "$ref": "#/definitions/ioQuota",
+          "description": "The quota for the event. If set to 0, then it is unlimited. If the quota is reached no new tickets can be issued."
+        },
+        "metrics": {
+          "$ref": "#/definitions/ioMetrics",
+          "description": "Performance analytics for the event. Not writable."
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the event was created. Not writable."
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the event updated. Not writable."
+        }
+      },
+      "description": "Contains event search result. Production and venue objects have limited fields.",
+      "title": "Event List Response"
+    },
+    "event_ticketsEventTicketPassRequest": {
+      "type": "object",
+      "properties": {
+        "ticketId": {
+          "$ref": "#/definitions/ioId"
+        },
+        "ticketNumber": {
+          "$ref": "#/definitions/event_ticketsTicketNumberRequest"
+        },
+        "orderNumber": {
+          "$ref": "#/definitions/event_ticketsOrderNumberRequest"
+        },
+        "format": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioPassBundleFormat"
+          },
+          "description": "Optional. If omitted, return the URL to the web pass landing page. Not used when getting or deleting the underlying boarding pass record."
+        }
+      }
+    },
+    "event_ticketsEventTicketPerson": {
+      "type": "object",
+      "properties": {
+        "ticketId": {
+          "$ref": "#/definitions/ioId"
+        },
+        "ticketNumber": {
+          "$ref": "#/definitions/event_ticketsTicketNumberRequest"
+        },
+        "person": {
+          "$ref": "#/definitions/ioPerson"
+        }
+      }
+    },
+    "event_ticketsFaceValue": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "number",
+          "format": "float",
+          "description": "The ticket amount in cents."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The ticket currency."
+        }
+      }
+    },
+    "event_ticketsIssueTicketRequest": {
+      "type": "object",
+      "properties": {
+        "eventId": {
+          "type": "string",
+          "description": "PassKit generated event id (22 characters). Required if event is not provided."
+        },
+        "event": {
+          "$ref": "#/definitions/event_ticketsEventLimitedFieldsRequest",
+          "description": "Event details. Event is auto generated if the record does not exist. Required if eventId is not provided."
+        },
+        "ticketTypeId": {
+          "type": "string",
+          "description": "PassKit generated ticketType id (22 characters)."
+        },
+        "ticketNumber": {
+          "type": "string",
+          "description": "Optional user generated ticket number. Unique within the Production."
+        },
+        "orderNumber": {
+          "type": "string",
+          "description": "Optional order / confirmation / booking code. Unique within the Production."
+        },
+        "groupingId": {
+          "type": "string",
+          "description": "Optional PassKit generated grouping ID. The system automatically groups tickets based by order number. Grouped tickets can be downloaded together from our multi-pass download pages. Not writable."
+        },
+        "barcodeContents": {
+          "type": "string",
+          "description": "The contents to embed in the barcode for this ticket. If not provided, the default value from the Ticket Type Pass Template Design is used."
+        },
+        "seatInfo": {
+          "$ref": "#/definitions/event_ticketsSeat",
+          "description": "The seat info for the ticket."
+        },
+        "faceValue": {
+          "$ref": "#/definitions/event_ticketsFaceValue",
+          "description": "The face value details for the ticket."
+        },
+        "person": {
+          "$ref": "#/definitions/ioPerson",
+          "description": "The ticket holder information. Stored encrypted in PassKit's database."
+        },
+        "metaData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Any other meta fields for the ticket that are not covered in the Ticket Object / API (i.e. you might want to capture ticket information specific to your process)."
+        },
+        "optOut": {
+          "type": "boolean",
+          "description": "Indicates if the holder of the ticket opted out to receive marketing promotions (defaults to false)."
+        },
+        "status": {
+          "$ref": "#/definitions/event_ticketsTicketStatus",
+          "description": "Holds the ticket status."
+        },
+        "expiryDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional field to set when the ticket expires. When the expiry date hits, it will automatically gray out the barcode."
+        },
+        "redemptionDetails": {
+          "$ref": "#/definitions/event_ticketsRedemptionDetails",
+          "description": "Contains details about the redemption (if the ticket is in a redeemed state). Not writable; set by the redeem endpoint."
+        },
+        "validateDetails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/event_ticketsValidateDetails"
+          },
+          "description": "Contains details about when the ticket was validated. Tickets can be validated multiple times. Not writable; set by the validate endpoint."
+        },
+        "passOverrides": {
+          "$ref": "#/definitions/ioPassOverrides",
+          "description": "Optional Pass level overrides for proximity & images."
+        },
+        "passMetaData": {
+          "$ref": "#/definitions/ioMetadata",
+          "description": "Pass Metadata hold meta data about the pass like status, lifecycle, utm details and installation data. Cannot be set via the API."
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket was created. Not writable."
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket last updated. Not writable."
+        }
+      },
+      "description": "Issue ticket. Event is auto created if it does not exist on the record.",
+      "title": "Issue Ticket Request",
+      "required": [
+        "eventId",
+        "event",
+        "ticketTypeId"
+      ]
+    },
+    "event_ticketsIssueTicketResponseIds": {
+      "type": "object",
+      "properties": {
+        "ticketId": {
+          "type": "string",
+          "description": "PassKit generated ticket id (22 characters)."
+        },
+        "productionId": {
+          "type": "string",
+          "description": "PassKit generated production id (22 characters)."
+        },
+        "venueId": {
+          "type": "string",
+          "description": "PassKit generated venue id (22 characters)."
+        },
+        "ticketTypeId": {
+          "type": "string",
+          "description": "PassKit generated ticket type id (22 characters)."
+        },
+        "eventId": {
+          "type": "string",
+          "description": "PassKit generated event id (22 characters)."
+        }
+      },
+      "description": "List of PassKit generated ids returned after issuing a ticket with production, venue, ticket type UIDs.",
+      "title": "Issue Ticket Response Ids"
+    },
+    "event_ticketsOrderNumberRequest": {
+      "type": "object",
+      "properties": {
+        "productionId": {
+          "type": "string",
+          "description": "Production ID. Required if productionUid is not provided."
+        },
+        "productionUid": {
+          "type": "string",
+          "description": "Production UID. Required if productionId is not provided."
+        },
+        "orderNumber": {
+          "type": "string",
+          "description": "Order Number."
+        }
+      }
+    },
+    "event_ticketsProduction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated production id (22 characters).",
+          "readOnly": true
+        },
+        "uid": {
+          "type": "string",
+          "description": "User generated production id; unique within the account."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the production (i.e. Les Miserables, The Lion King, Avengers, etc)."
+        },
+        "localizedName": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized name of the production."
+        },
+        "finePrint": {
+          "type": "string",
+          "description": "Fine print: terms & conditions for the production."
+        },
+        "localizedFinePrint": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized fine print of the production."
+        },
+        "autoInvalidateTicketsUponRedemption": {
+          "$ref": "#/definitions/ioToggle",
+          "description": "If set will automatically delete the ticket and invalidate the pass in our system upon ticket redemption. If not set, the tickets will expire 90 days after issue. If the ticket is not auto invalidated it can be used for further engagement."
+        },
+        "autoInvalidateTicketsUponEventEnd": {
+          "$ref": "#/definitions/ioToggle",
+          "description": "If set will automatically delete the ticket and invalidate the pass in our system 1 day after the event end date (if set). If event date is not set, it will expire 1 day after event start date. If not set, the tickets will expire 90 days after issue. If the ticket is not auto invalidated it can be used for further engagement."
+        },
+        "autoInvalidateTicketsUponExpiry": {
+          "$ref": "#/definitions/ioToggle",
+          "description": "If set will automatically delete the ticket and invalidate the pass in our system upon ticket expiry. If not set, the tickets will expire 90 days after issue. If the ticket is not auto invalidated it can be used for further engagement."
+        },
+        "status": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioProjectStatus"
+          },
+          "description": "The events status (bitmask of ProjectStatus). Defaults to io.ProjectStatus.PROJECT_ACTIVE_FOR_OBJECT_CREATION + io.ProjectStatus.PROJECT_DRAFT."
+        },
+        "passTypeIdentifier": {
+          "type": "string",
+          "description": "Leave empty for draft production. Needs to be set for productions where status contains PROJECT_PUBLISHED."
+        },
+        "distributionSettings": {
+          "$ref": "#/definitions/ioDistributionSettings",
+          "description": "Contains the email & sms distribution settings for the production."
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the event was created. Not writable.",
+          "readOnly": true
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the event updated. Not writable.",
+          "readOnly": true
+        }
+      },
+      "description": "Production contains data that is shared by events: common event properties / settings, distribution settings and Apple Pass Type details.",
+      "title": "Production",
+      "required": [
+        "name"
+      ]
+    },
+    "event_ticketsProductionAnalyticsResponse": {
+      "type": "object",
+      "properties": {
+        "period": {
+          "$ref": "#/definitions/ioPeriod",
+          "description": "Period unit of data returned (day, month or year)."
+        },
+        "redeemed": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Passes redeemed in this period."
+        },
+        "devices": {
+          "$ref": "#/definitions/ioDeviceBreakdown",
+          "description": "Total number of pass redeemed for each device type."
+        },
+        "sources": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "Total number of pass redeemed for each distribution source."
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioChartDataPoints"
+          },
+          "description": "Breakdown of data by day, month or year."
+        }
+      }
+    },
+    "event_ticketsProductionCopyRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "uuid of the Production to copy."
+        },
+        "uid": {
+          "type": "string",
+          "description": "User generated production id; unique within the account."
+        },
+        "name": {
+          "type": "string",
+          "description": "Optional name for the new Production."
+        },
+        "status": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioProjectStatus"
+          },
+          "description": "Status to set the copied Production to."
+        },
+        "passTypeIdentifier": {
+          "type": "string",
+          "description": "Can optionally be provided if setting status to published (requires a prod cert)."
+        }
+      },
+      "description": "Contains payload for copying a Production."
+    },
+    "event_ticketsProductionLimitedFieldsResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated production id (22 characters)."
+        },
+        "uid": {
+          "type": "string",
+          "description": "User generated production id; unique within the account."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the production (i.e. Les Miserables, The Lion King, Avengers, etc)."
+        }
+      },
+      "description": "Production contains data that is shared by events: common event properties / settings, distribution settings and Apple Pass Type details.",
+      "title": "Production (Light ver)"
+    },
+    "event_ticketsRedeemByOrderNumber": {
+      "type": "object",
+      "properties": {
+        "productionId": {
+          "type": "string",
+          "description": "Production ID. Required if productionUid is not provided."
+        },
+        "productionUid": {
+          "type": "string",
+          "title": "Production UID. Required if productionId is not provided"
+        },
+        "orderNumber": {
+          "type": "string",
+          "description": "Order Number."
+        },
+        "redemptionDetails": {
+          "$ref": "#/definitions/event_ticketsRedemptionDetails",
+          "description": "Details about the redemption."
+        }
+      }
+    },
+    "event_ticketsRedeemTicketRequest": {
+      "type": "object",
+      "properties": {
+        "ticket": {
+          "$ref": "#/definitions/event_ticketsTicketId",
+          "description": "Ticket id for the ticket to redeem."
+        },
+        "redemptionDetails": {
+          "$ref": "#/definitions/event_ticketsRedemptionDetails",
+          "description": "Additional details to set for this redemption."
+        }
+      }
+    },
+    "event_ticketsRedemptionDetails": {
+      "type": "object",
+      "properties": {
+        "redemptionDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket was redeemed, auto set by the system when the redeem endpoint is called. Not writable."
+        },
+        "lat": {
+          "type": "number",
+          "format": "double",
+          "description": "Optional redemption lat."
+        },
+        "lon": {
+          "type": "number",
+          "format": "double",
+          "description": "Optional redemption lon."
+        },
+        "alt": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Optional redemption alt."
+        },
+        "redemptionSource": {
+          "type": "string",
+          "description": "Optional redemption user agent, can be used in case where a Merchant uses the PassKit scanning solution combined with their own scanning software and wants to differentiate the source of redemption."
+        },
+        "redemptionReference": {
+          "type": "string",
+          "description": "Optional redemption reference, can be used for staff name, username, scanner ID, location ID, etc."
+        }
+      }
+    },
+    "event_ticketsSeat": {
+      "type": "object",
+      "properties": {
+        "seat": {
+          "type": "string",
+          "description": "The seat number, such as \"1\", \"2\", \"3\", or any other seat identifier."
+        },
+        "localizedSeat": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized seat number."
+        },
+        "row": {
+          "type": "string",
+          "description": "The row of the seat, such as \"1\", E\", \"BB\", or \"A5\"."
+        },
+        "localizedRow": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized row."
+        },
+        "section": {
+          "type": "string",
+          "description": "The section of the seat, such as \"121\"."
+        },
+        "localizedSection": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized section."
+        },
+        "gate": {
+          "type": "string",
+          "description": "The gate the ticket holder should enter to get to their seat, such as \"A\" or \"West\"."
+        },
+        "localizedGate": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized gate."
+        }
+      }
+    },
+    "event_ticketsTicket": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated ticket id (22 characters).",
+          "readOnly": true
+        },
+        "ticketNumber": {
+          "type": "string",
+          "description": "Optional user generated ticket number. Unique within the Production."
+        },
+        "event": {
+          "$ref": "#/definitions/event_ticketsEvent",
+          "description": "The event that the ticket is for. Can provide event id, or the whole event object - if the event doesn't exist it will be created. The combination of event.production.id, event.startDate, event.venue.uid & ticket.ticketTypeUid is enforced unique in the system."
+        },
+        "ticketType": {
+          "$ref": "#/definitions/event_ticketsTicketType",
+          "description": "The ticket type the ticket is for."
+        },
+        "orderNumber": {
+          "type": "string",
+          "description": "Optional order / confirmation / booking code. Unique within the Production."
+        },
+        "groupingId": {
+          "type": "string",
+          "description": "Optional PassKit generated grouping ID. The system automatically groups tickets based by order number. Grouped tickets can be downloaded together from our multi-pass download pages. Not writable."
+        },
+        "barcodeContents": {
+          "type": "string",
+          "description": "The contents to embed in the barcode for this ticket. If not provided, the default value from the Ticket Type Pass Template Design is used."
+        },
+        "seatInfo": {
+          "$ref": "#/definitions/event_ticketsSeat",
+          "description": "The seat info for the ticket."
+        },
+        "faceValue": {
+          "$ref": "#/definitions/event_ticketsFaceValue",
+          "description": "The face value details for the ticket."
+        },
+        "person": {
+          "$ref": "#/definitions/ioPerson",
+          "description": "The ticket holder information. Stored encrypted in PassKit's database."
+        },
+        "metaData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Any other meta fields for the ticket that are not covered in the Ticket Object / API (i.e. you might want to capture ticket information specific to your process)."
+        },
+        "optOut": {
+          "$ref": "#/definitions/ioToggle",
+          "description": "Indicates if the holder of the ticket opted out to receive marketing promotions (defaults to false)."
+        },
+        "status": {
+          "$ref": "#/definitions/event_ticketsTicketStatus",
+          "description": "Holds the ticket status.",
+          "readOnly": true
+        },
+        "expiryDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional field to set when the ticket expires. When the expiry date hits, it will automatically gray out the barcode."
+        },
+        "redemptionDetails": {
+          "$ref": "#/definitions/event_ticketsRedemptionDetails",
+          "description": "Contains details about the redemption (if the ticket is in a redeemed state). Not writable; set by the redeem endpoint."
+        },
+        "validateDetails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/event_ticketsValidateDetails"
+          },
+          "description": "Contains details about when the ticket was validated. Tickets can be validated multiple times. Not writable; set by the validate endpoint."
+        },
+        "passOverrides": {
+          "$ref": "#/definitions/ioPassOverrides",
+          "description": "Optional Pass level overrides for proximity & images."
+        },
+        "passMetaData": {
+          "$ref": "#/definitions/ioMetadata",
+          "description": "Pass Metadata hold meta data about the pass like status, lifecycle, utm details and installation data. Cannot be set via the API."
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket was created. Not writable.",
+          "readOnly": true
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket last updated. Not writable.",
+          "readOnly": true
+        }
+      },
+      "description": "Ticket is a unique ticket instance and holds details about the event dates & times, venue, ticket holder and other relevant details pertaining to a ticket.",
+      "title": "Ticket",
+      "required": [
+        "event",
+        "ticketTypeUid"
+      ]
+    },
+    "event_ticketsTicketId": {
+      "type": "object",
+      "properties": {
+        "ticketId": {
+          "type": "string",
+          "description": "The Ticket id (22 character identifier)."
+        },
+        "ticketNumber": {
+          "$ref": "#/definitions/event_ticketsTicketNumber",
+          "title": "A ticket number object containing a production id and ticket number\""
+        }
+      },
+      "description": "An object to communicate the ID of the ticket. Either the ticket id (22 character identifier), or the production id\n(22 character identifier), or Production UID (user defined id) plus the externally provided ticket number should be provided."
+    },
+    "event_ticketsTicketLimitedFields": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated ticket id (22 characters)."
+        },
+        "ticketNumber": {
+          "type": "string",
+          "description": "User generated ticket number. Unique within the Production."
+        },
+        "production": {
+          "$ref": "#/definitions/event_ticketsProductionLimitedFieldsResponse",
+          "description": "The production information."
+        },
+        "event": {
+          "$ref": "#/definitions/event_ticketsEventLimitedFieldsResponse",
+          "description": "The event information. Only specific fields are returned."
+        },
+        "venue": {
+          "$ref": "#/definitions/event_ticketsVenueLimitedFieldsResponse",
+          "description": "Venue information. Only specific fields are returned."
+        },
+        "ticketType": {
+          "$ref": "#/definitions/event_ticketsTicketTypeLimitedFields",
+          "description": "The ticket type the ticket is for. Only specific fields are returned."
+        },
+        "orderNumber": {
+          "type": "string",
+          "description": "Optional order / confirmation / booking code. Unique within the Production."
+        },
+        "groupingId": {
+          "type": "string",
+          "description": "Optional PassKit generated grouping ID. The system automatically groups tickets based by order number. Grouped tickets can be downloaded together from our multi-pass download pages. Not writable."
+        },
+        "barcodeContents": {
+          "type": "string",
+          "description": "The contents to embed in the barcode for this ticket. If not provided, the default value from the Ticket Type Pass Template Design is used."
+        },
+        "seatInfo": {
+          "$ref": "#/definitions/event_ticketsSeat",
+          "description": "The seat info for the ticket."
+        },
+        "faceValue": {
+          "$ref": "#/definitions/event_ticketsFaceValue",
+          "description": "The face value details for the ticket."
+        },
+        "person": {
+          "$ref": "#/definitions/ioPerson",
+          "description": "The ticket holder information. Stored encrypted in PassKit's database."
+        },
+        "metaData": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Any other meta fields for the ticket that are not covered in the Ticket Object / API (i.e. you might want to capture ticket information specific to your process)."
+        },
+        "optOut": {
+          "type": "boolean",
+          "description": "Indicates if the holder of the ticket opted out to receive marketing promotions (defaults to false)."
+        },
+        "status": {
+          "$ref": "#/definitions/event_ticketsTicketStatus",
+          "description": "Holds the ticket status."
+        },
+        "expiryDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Optional field to set when the ticket expires. When the expiry date hits, it will automatically gray out the barcode."
+        },
+        "redemptionDetails": {
+          "$ref": "#/definitions/event_ticketsRedemptionDetails",
+          "description": "Contains details about the redemption (if the ticket is in a redeemed state). Not writable; set by the redeem endpoint."
+        },
+        "validateDetails": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/event_ticketsValidateDetails"
+          },
+          "description": "Contains details about when the ticket was validated. Tickets can be validated multiple times. Not writable; set by the validate endpoint."
+        },
+        "passOverrides": {
+          "$ref": "#/definitions/ioPassOverrides",
+          "description": "Optional Pass level overrides for proximity & images."
+        },
+        "passMetaData": {
+          "$ref": "#/definitions/ioMetadata",
+          "description": "Pass Metadata hold meta data about the pass like status, lifecycle, utm details and installation data. Cannot be set via the API."
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket was created. Not writable."
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket last updated. Not writable."
+        }
+      },
+      "description": "Ticket is a unique ticket instance and holds details about the event dates & times, venue, ticket holder and other relevant details pertaining to a ticket.",
+      "title": "Ticket (Light ver)",
+      "required": [
+        "event",
+        "ticketTypeUid"
+      ]
+    },
+    "event_ticketsTicketListRequest": {
+      "type": "object",
+      "properties": {
+        "productionId": {
+          "type": "string",
+          "description": "Production ID. Required if productionUid is not provided."
+        },
+        "productionUid": {
+          "type": "string",
+          "description": "Production UID. Required if productionId is not provided."
+        },
+        "eventId": {
+          "type": "string",
+          "description": "Event ID generated by PassKit."
+        },
+        "eventFilterByVenueAndStart": {
+          "$ref": "#/definitions/event_ticketsEventFilterByVenueAndStart"
+        },
+        "ticketTypeId": {
+          "type": "string",
+          "description": "PassKit Ticket Type ID."
+        },
+        "ticketTypeUid": {
+          "type": "string",
+          "description": "User Defined Ticket Type ID."
+        },
+        "filters": {
+          "$ref": "#/definitions/ioFilters",
+          "description": "Filters: allows to filter on additional ticket data (i.e. group id, pass install status, updated etc)."
+        }
+      },
+      "description": "Used to filter tickets for a production.",
+      "title": "List Request",
+      "required": [
+        "productionId",
+        "productionUid"
+      ]
+    },
+    "event_ticketsTicketNumber": {
+      "type": "object",
+      "properties": {
+        "productionId": {
+          "type": "string",
+          "description": "The Production id (22 character identifier), or the Production user defined id."
+        },
+        "ticketNumber": {
+          "type": "string",
+          "title": "The user defined ticket number (unique within production)"
+        }
+      }
+    },
+    "event_ticketsTicketNumberRequest": {
+      "type": "object",
+      "properties": {
+        "productionId": {
+          "type": "string",
+          "description": "Production ID. Required if productionUid is not provided."
+        },
+        "productionUid": {
+          "type": "string",
+          "description": "Production UID. Required if productionId is not provided."
+        },
+        "ticketNumber": {
+          "type": "string",
+          "description": "Ticket Number."
+        }
+      }
+    },
+    "event_ticketsTicketStatus": {
+      "type": "string",
+      "enum": [
+        "STATUS_NONE",
+        "ISSUED",
+        "REDEEMED"
+      ],
+      "default": "STATUS_NONE",
+      "description": " - ISSUED: Default ticket status\n - REDEEMED: Set after a ticket is redeemed (the redeem endpoint is called)."
+    },
+    "event_ticketsTicketType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated ticket type id (22 characters).",
+          "readOnly": true
+        },
+        "uid": {
+          "type": "string",
+          "description": "User generated ticket type id; unique within the Production."
+        },
+        "productionId": {
+          "type": "string",
+          "title": "The Production the ticket type belongs to"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the ticket type. Internal use only."
+        },
+        "localizedName": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized name of the ticket type."
+        },
+        "ticketTypeConditions": {
+          "type": "string",
+          "description": "Terms & conditions specifically for this ticket type."
+        },
+        "localizedTicketTypeConditions": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized ticket conditions for this ticket type."
+        },
+        "beforeRedeemPassTemplateId": {
+          "type": "string",
+          "description": "The pass template design ID that tickets will use when initially issued."
+        },
+        "afterRedeemPassTemplateId": {
+          "type": "string",
+          "description": "Optional pass template ID that tickets will use after the ticket holder checked into the venue (when the ticket switches to its redeemed state)."
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket type was created. Cannot be set via the API.",
+          "readOnly": true
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket type updated. Cannot be set via the API.",
+          "readOnly": true
+        }
+      },
+      "description": "Ticket Type holds details about the ticket type, and links to the before & after redeem Pass Template Designs.",
+      "title": "Ticket Type",
+      "required": [
+        "productionId",
+        "name",
+        "beforeRedeemPassTemplateId"
+      ]
+    },
+    "event_ticketsTicketTypeLimitedFields": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated ticket type id (22 characters)."
+        },
+        "uid": {
+          "type": "string",
+          "description": "User generated ticket type id; unique within the Production."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the ticket type. Internal use only."
+        }
+      },
+      "description": "Ticket Type holds details about the ticket type, and links to the before & after redeem Pass Template Designs.",
+      "title": "Ticket Type (Light ver)"
+    },
+    "event_ticketsTickets": {
+      "type": "object",
+      "properties": {
+        "tickets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/event_ticketsTicketLimitedFields"
+          }
+        }
+      }
+    },
+    "event_ticketsValidateDetails": {
+      "type": "object",
+      "properties": {
+        "validateDate": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the ticket was validated, auto set by the system when the validate endpoint is called. Tickets can be validated multiple times. Not writable."
+        },
+        "lat": {
+          "type": "number",
+          "format": "double",
+          "description": "Optional redemption lat."
+        },
+        "lon": {
+          "type": "number",
+          "format": "double",
+          "description": "Optional redemption lon."
+        },
+        "alt": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Optional redemption alt."
+        },
+        "validateSource": {
+          "type": "string",
+          "description": "Optional validate user agent, can be used in case where a Merchant uses the PassKit scanning solution combined with their own scanning software and wants to differentiate the source of validation."
+        },
+        "validateReference": {
+          "type": "string",
+          "description": "Optional validate reference, can be used for staff name, username, scanner ID, location ID, etc."
+        }
+      }
+    },
+    "event_ticketsValidateTicketRequest": {
+      "type": "object",
+      "properties": {
+        "maxNumberOfValidations": {
+          "type": "integer",
+          "format": "int64",
+          "description": "If provided will auto redeem ticket once max number of validations has been reached."
+        },
+        "ticket": {
+          "$ref": "#/definitions/event_ticketsTicketId",
+          "description": "Ticket id for the ticket to validate."
+        },
+        "validateDetails": {
+          "$ref": "#/definitions/event_ticketsValidateDetails",
+          "description": "Additional details to set for this validation."
+        }
+      }
+    },
+    "event_ticketsValidateTicketResponse": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean",
+          "description": "Indicates if the ticket is valid."
+        },
+        "ticket": {
+          "$ref": "#/definitions/event_ticketsTicket",
+          "description": "Full ticket details."
+        }
+      }
+    },
+    "event_ticketsVenue": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated venue id (22 characters).",
+          "readOnly": true
+        },
+        "uid": {
+          "type": "string",
+          "description": "User generated venue id; unique within the user account."
+        },
+        "name": {
+          "type": "string",
+          "description": "The venue name."
+        },
+        "localizedName": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized venue name."
+        },
+        "address": {
+          "type": "string",
+          "description": "The venue address."
+        },
+        "localizedAddress": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized venue address."
+        },
+        "timezone": {
+          "type": "string",
+          "description": "Timezone applied for the event dates. e.g. America/New_York, Asia/Singapore, Europe/London."
+        },
+        "gpsCoords": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioGPSLocation"
+          },
+          "description": "Optional GPS location details of the venue. If provided will be embedded into the ticket as the first GPS location."
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the venue was created. Not writable.",
+          "readOnly": true
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The date the venue updated. Not writable.",
+          "readOnly": true
+        }
+      },
+      "description": "Venue holds details about where the event takes place",
+      "title": "Venue",
+      "required": [
+        "name",
+        "address",
+        "ianaTimezone"
+      ]
+    },
+    "event_ticketsVenueLimitedFieldsResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "PassKit generated venue id (22 characters)."
+        },
+        "uid": {
+          "type": "string",
+          "description": "User generated venue id; unique within the user account."
+        },
+        "name": {
+          "type": "string",
+          "description": "The venue name."
+        }
+      },
+      "description": "Venue holds details about where the event takes place",
+      "title": "Venue (Light ver)"
+    },
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "ioBeacon": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "System generated unique identifier for your beacon"
+        },
+        "uuid": {
+          "type": "string",
+          "description": "A valid UUID that is being broadcast from your beacon."
+        },
+        "name": {
+          "type": "string",
+          "title": "A friendly name used to display the beacon in the admin portal"
+        },
+        "major": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Major indicator.",
+          "maximum": 65535
+        },
+        "minor": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Minor indicator.",
+          "maximum": 65535
+        },
+        "lockScreenMessage": {
+          "type": "string",
+          "description": "Message to be displayed on lock screen when user is in proximity of the beacon (iOS only)."
+        },
+        "localizedLockScreenMessage": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized lock screen message."
+        },
+        "position": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Beacons will be added in order of their position, from lowest to highest. Position can be any value, E.g. 3 Beacons with positions 30, 10, 20 would be added 10 first, 20 second and 30 third.  If no position is provided and the number of beacons exceeds 10, there is no guarantee which beacon(s) would be excluded from the pass."
+        }
+      },
+      "description": "A beacon record enables the pass to push a message to the lock screen when the user is in close proximity with the beacon. Beacons are currently only supported by iOS.",
+      "title": "Beacon",
+      "required": [
+        "uuid",
+        "lockScreenMessage"
+      ]
+    },
+    "ioChartDataPoints": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "title": "ie. January, Monday"
+        },
+        "created": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Daily, monthly or yearly total of pass created."
+        },
+        "installed": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Daily, monthly or yearly total of pass installed."
+        },
+        "updated": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Daily, monthly or yearly total of pass updated."
+        },
+        "deleted": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Daily, monthly or yearly total of pass deleted."
+        },
+        "invalidated": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Daily, monthly or yearly total of pass invalidated."
+        },
+        "custom": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Daily, monthly or yearly total of custom data (in case this field used by a protocol; it can put whatever is preferred in here)."
+        }
+      }
+    },
+    "ioColors": {
+      "type": "object",
+      "properties": {
+        "backgroundColor": {
+          "type": "string",
+          "description": "The background color of the card in hex (e.g. “#ffffff” or \"ffffff\")."
+        },
+        "labelColor": {
+          "type": "string",
+          "description": "This customises the color of field label of Apple Wallet pass."
+        },
+        "textColor": {
+          "type": "string",
+          "description": "This customises the color of field text or value of Apple Wallet pass."
+        },
+        "stripColor": {
+          "type": "string",
+          "description": "Optional undocumented color for text placed over the strip image in Apple Wallet."
+        }
+      },
+      "description": "Colours take a hexcode input.  A '#' prefix is optional."
+    },
+    "ioCount": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "ioCouponAnalyticsFilter": {
+      "type": "object",
+      "properties": {
+        "offerId": {
+          "type": "string"
+        }
+      }
+    },
+    "ioDate": {
+      "type": "object",
+      "properties": {
+        "year": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Year."
+        },
+        "month": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Month."
+        },
+        "day": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Day."
+        }
+      },
+      "description": "A fixed date without timezone information."
+    },
+    "ioDeviceAttributes": {
+      "type": "string",
+      "enum": [
+        "NoAttributes",
+        "Ios",
+        "Android",
+        "SupportWallet",
+        "WalletScanner",
+        "WalletDaemon",
+        "WalletPasses",
+        "Windows",
+        "OSX",
+        "Linux",
+        "Mobile",
+        "Desktop",
+        "Tablet",
+        "UnsupportedIos"
+      ],
+      "default": "NoAttributes"
+    },
+    "ioDeviceBreakdown": {
+      "type": "object",
+      "properties": {
+        "appleWallet": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Total number of passes installed in Apple Wallet."
+        },
+        "googlePay": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Total number of passes installed in Google Pay."
+        },
+        "otherWallet": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Total number of passes installed in Other Wallet."
+        }
+      }
+    },
+    "ioDistributionChannel": {
+      "type": "string",
+      "enum": [
+        "NO_DISTRIBUTION",
+        "CHANNEL_EMAIL",
+        "CHANNEL_SMS"
+      ],
+      "default": "NO_DISTRIBUTION",
+      "title": "- CHANNEL_EMAIL: Unique pass link is distributed via email (will use default PK email template if no custom Email Template is provided)\n - CHANNEL_SMS: Unique pass link is distributed via SMS (will use default PK SMS template if no custom SMS Template is provided)"
+    },
+    "ioDistributionSettings": {
+      "type": "object",
+      "properties": {
+        "distributionChannels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioDistributionChannel"
+          }
+        },
+        "welcomeEmail": {
+          "$ref": "#/definitions/ioEmailTemplate",
+          "title": "Welcome email settings"
+        },
+        "welcomeSms": {
+          "$ref": "#/definitions/ioSmsTemplate",
+          "title": "Welcome SMS settings"
+        }
+      },
+      "title": "DistributionSettings can be used by protocol top level elements to define the email / sms-es"
+    },
+    "ioEmailConfiguration": {
+      "type": "object",
+      "properties": {
+        "emailFrom": {
+          "type": "string",
+          "description": "Sender's email address."
+        },
+        "emailFromName": {
+          "type": "string",
+          "description": "Sender's company / organization name."
+        },
+        "EmailFromVerifiedForSending": {
+          "type": "boolean",
+          "title": "Indicates that PassKit is authorized to send from the emailFrom address (either via AWS or Google Cloud)"
+        },
+        "useCustomHtml": {
+          "type": "boolean",
+          "description": "Indicated that bodyHtmlContent is custom HTML provided by the user."
+        }
+      }
+    },
+    "ioEmailTemplate": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "string",
+          "description": "Subject of the email. Can contain any of the fields from fields array: ${DISPLAY_NAME}, ${EMAIL_ADDRESS}, etc.."
+        },
+        "localizedSubject": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized subject of the email. Can contain any of the fields from fields array: ${DISPLAY_NAME}, ${EMAIL_ADDRESS}, etc."
+        },
+        "bodyTextContent": {
+          "type": "string",
+          "description": "Text content of the email (for email clients that don't support HTML). The body text is rendered above pass install url text. Can contain any of the fields from fields array: ${DISPLAY_NAME}, ${EMAIL_ADDRESS}, etc."
+        },
+        "localizedBodyTextContent": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized text content of the email (for email clients that don't support HTML). The body text is rendered above pass install url text. Can contain any of the fields from fields array: ${DISPLAY_NAME}, ${EMAIL_ADDRESS}, etc."
+        },
+        "bodyHtmlContent": {
+          "type": "string",
+          "description": "Content for HTML email rendered above the pass install button. Can contain any of the fields from fields array: ${DISPLAY_NAME}, ${EMAIL_ADDRESS}, etc."
+        },
+        "localizedBodyHtmlContent": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized content for HTML email. Can contain any of the fields from fields array: ${DISPLAY_NAME}, ${EMAIL_ADDRESS}, etc."
+        },
+        "configuration": {
+          "$ref": "#/definitions/ioEmailConfiguration",
+          "title": "7 is reserved for custom email SMTP configuration"
+        },
+        "buttonText": {
+          "type": "string",
+          "description": "Text of the pass install button."
+        },
+        "buttonTextColor": {
+          "type": "string",
+          "description": "Text color of the pass install button."
+        },
+        "buttonBackgroundColor": {
+          "type": "string",
+          "description": "Color of the pass install button."
+        },
+        "buttonBorderRadius": {
+          "type": "string",
+          "description": "Radius of the pass install button. The unit can be px or %. Default is px."
+        },
+        "footerTextContent": {
+          "type": "string",
+          "description": "Footer text content (for email clients that don't support HTML). The footer text is rendered below the pass install url text."
+        },
+        "localizedFooterTextContent": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized footer text content (for email clients that don't support HTML). The footer text is rendered below the pass install url text."
+        },
+        "footerHtmlContent": {
+          "type": "string",
+          "description": "Footer HTML content rendered below the pass install button."
+        },
+        "localizedFooterHtmlContent": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized content for HTML footer content which is rendered below the pass install button."
+        },
+        "messageBackgroundColor": {
+          "type": "string",
+          "description": "Background color for the message content section."
+        },
+        "pageBackgroundColor": {
+          "type": "string",
+          "description": "Background color for the margin space surrounding the message content. This setting is relevant for PC viewers."
+        },
+        "templateOptions": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Holds additional template options for rendering the email template."
+        }
+      },
+      "title": "EmailTemplate contains details for sending an email to a customer.\nUses the default PassKit email provider and sending credentials"
+    },
+    "ioEventTicketAnalyticsFilter": {
+      "type": "object",
+      "properties": {
+        "ticketTypeId": {
+          "type": "string"
+        },
+        "ticketTypeUid": {
+          "type": "string"
+        },
+        "venueId": {
+          "type": "string"
+        },
+        "venueUid": {
+          "type": "string"
+        },
+        "eventId": {
+          "type": "string"
+        }
+      }
+    },
+    "ioFieldFilter": {
+      "type": "object",
+      "properties": {
+        "filterField": {
+          "type": "string",
+          "description": "Column name to filter results by."
+        },
+        "filterValue": {
+          "type": "string",
+          "description": "Values to test against the filter fields."
+        },
+        "filterOperator": {
+          "type": "string",
+          "title": "Operator (e.g. eq, gt, gte, lt, lte, like)"
+        }
+      }
+    },
+    "ioFilterGroup": {
+      "type": "object",
+      "properties": {
+        "condition": {
+          "$ref": "#/definitions/ioOperator",
+          "title": "Use AND or OR conditions to join each filter field. E.g. (tier_id = bronze AND tier_id = silver) (tier_id = bronze OR tier_id = silver)"
+        },
+        "fieldFilters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioFieldFilter"
+          },
+          "description": "Filter fields."
+        }
+      }
+    },
+    "ioFilters": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Limit the number of records returned. If not specified, a default of 25 is used.  Enter -1 for all records."
+        },
+        "offset": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Allows you to offset the first record returned by the limit."
+        },
+        "filterGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioFilterGroup"
+          }
+        },
+        "orderBy": {
+          "type": "string",
+          "description": "Field to order results by."
+        },
+        "orderAsc": {
+          "type": "boolean",
+          "description": "Will return in ascending order if true, or descending order if false."
+        }
+      },
+      "description": "Filters applies multiple filter conditions to retrieve matched records.",
+      "title": "Pagination"
+    },
+    "ioFlightAnalyticsFilter": {
+      "type": "object",
+      "properties": {
+        "flightNumber": {
+          "type": "string"
+        },
+        "departureDate": {
+          "$ref": "#/definitions/ioDate"
+        },
+        "boardingPoint": {
+          "type": "string"
+        },
+        "deplaningPoint": {
+          "type": "string"
+        }
+      },
+      "description": "FlightAnalyticsFilter filter analytics by flight or/and flight designator.\nFlightNumber, departureDate, boardingPoint and deplaningPoint are required to filter by flight."
+    },
+    "ioGPSLocation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "System generated unique identifier for your GPS Location"
+        },
+        "name": {
+          "type": "string",
+          "title": "a friendly name for the location used to display the location in the admin portal"
+        },
+        "lat": {
+          "type": "number",
+          "format": "double",
+          "description": "Latitude."
+        },
+        "lon": {
+          "type": "number",
+          "format": "double",
+          "description": "Longitude."
+        },
+        "alt": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Altitude in metres."
+        },
+        "lockScreenMessage": {
+          "type": "string",
+          "description": "Message to be displayed on lock screen when user is in the location (iOS only)."
+        },
+        "localizedLockScreenMessage": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "Localized lock screen message."
+        },
+        "position": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Locations will be added in order of their position, from lowest to highest. Position can be any value, E.g. 3 Locations with positions 30, 10, 20 would be added 10 first, 20 second and 30 third.  If no position is provided and the number of locations exceeds 10, there is no guarantee which location(s) would be excluded from the pass."
+        }
+      },
+      "description": "A location record enables the pass to be pushed to the lock screen when the user is in near the location. For iOS users, a customized message can also be displayed.",
+      "title": "GPS Location",
+      "required": [
+        "lat",
+        "long",
+        "lockScreenMessage"
+      ]
+    },
+    "ioGender": {
+      "type": "string",
+      "enum": [
+        "NOT_KNOWN",
+        "MALE",
+        "FEMALE"
+      ],
+      "default": "NOT_KNOWN",
+      "description": "Gender, as per government issued id.\n\n - NOT_KNOWN: Use only where gender is not known\n - MALE: Male\n - FEMALE: Female"
+    },
+    "ioId": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique identifier to an object or record."
+        }
+      },
+      "description": "An Id is used to access an unique object or record. Eg. a PassKit pass id."
+    },
+    "ioIds": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "An array of unique identifiers for objects or records."
+        }
+      }
+    },
+    "ioImageIds": {
+      "type": "object",
+      "properties": {
+        "icon": {
+          "type": "string"
+        },
+        "logo": {
+          "type": "string"
+        },
+        "appleLogo": {
+          "type": "string"
+        },
+        "hero": {
+          "type": "string"
+        },
+        "eventStrip": {
+          "type": "string"
+        },
+        "strip": {
+          "type": "string"
+        },
+        "thumbnail": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string"
+        },
+        "footer": {
+          "type": "string"
+        },
+        "security": {
+          "type": "string"
+        },
+        "privilege": {
+          "type": "string"
+        },
+        "airlineAlliance": {
+          "type": "string"
+        },
+        "personalization": {
+          "type": "string"
+        },
+        "banner": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "profile": {
+          "type": "string"
+        },
+        "appImage": {
+          "type": "string"
+        },
+        "stampedImage": {
+          "type": "string"
+        },
+        "unstampedImage": {
+          "type": "string"
+        },
+        "stampImage": {
+          "type": "string"
+        }
+      },
+      "description": "This manages images by id",
+      "title": "Image Ids",
+      "required": [
+        "icon"
+      ]
+    },
+    "ioLifecycleEvents": {
+      "type": "string",
+      "enum": [
+        "NO_STATUS",
+        "RENDERED",
+        "INSTALLED_APPLE",
+        "INSTALLED_GOOGLE",
+        "INSTALLED_ANDROID_OTHER",
+        "UNINSTALLED_APPLE",
+        "UNINSTALLED_GOOGLE",
+        "UNINSTALLED_ANDROID_OTHER",
+        "APPLE_PASS_CREATED",
+        "GOOGLE_PAY_RECORD_CREATED",
+        "INVALIDATE_REQUESTED",
+        "INVALIDATE_CONFIRMED"
+      ],
+      "default": "NO_STATUS",
+      "description": "Statuses of the pass. A pass will collect multiple statuses as it passes through its lifecycle.\n\n - RENDERED: Pass has been created and presented to the user to install.\n - INSTALLED_APPLE: Pass has been installed in at least one Apple device.\n - INSTALLED_GOOGLE: Pass has been installed in at least one Google Pay account.\n - INSTALLED_ANDROID_OTHER: Pass has been installed in at least one Android wallet app.\n - UNINSTALLED_APPLE: Pass has been uninstalled from at least one Apple device.\n - UNINSTALLED_GOOGLE: Pass has been uninstalled from at least one Google Pay account.\n - UNINSTALLED_ANDROID_OTHER: Pass has been uninstalled from at least one Android wallet app.\n - APPLE_PASS_CREATED: An Apple pass bundle has been created.\n - GOOGLE_PAY_RECORD_CREATED: A Google Pay record has been created.\n - INVALIDATE_REQUESTED: Invalidation request sent to pass.\n - INVALIDATE_CONFIRMED: Pass has been invalidated."
+    },
+    "ioLink": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Link Id. Not writable."
+        },
+        "url": {
+          "type": "string",
+          "description": "A link text."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title for the link."
+        },
+        "type": {
+          "$ref": "#/definitions/ioLinkType",
+          "description": "Type of link data."
+        },
+        "localizedLink": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "This customises link text for different languages. Ignored by Google Pay passes."
+        },
+        "localizedTitle": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "This translates link title in different languages."
+        },
+        "usage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioUsageType"
+          },
+          "description": "Indicates which wallets the link should be rendered for (this allows to hide certain link on Apple Wallet, and vise versa)."
+        },
+        "position": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Links will be rendered in order of their position, from lowest to highest. Position can be any value, E.g. 3 links with positions 30, 10, 20 would render 10 first, 20 second and 30 third.  If no position is provided, the order of the links cannot be guaranteed."
+        }
+      },
+      "description": "Used to specify links put on the back of the pass."
+    },
+    "ioLinkType": {
+      "type": "string",
+      "enum": [
+        "URI_DO_NOT_USE",
+        "URI_WEB",
+        "URI_TEL",
+        "URI_EMAIL",
+        "URI_LOCATION",
+        "URI_CALENDAR"
+      ],
+      "default": "URI_DO_NOT_USE",
+      "description": "Used to specify the type of link for link field. Each type has different icon on Google Pay.\n\n - URI_DO_NOT_USE: A link to website.\n - URI_WEB: A link to website.\n - URI_TEL: A phone number.\n - URI_EMAIL: An email address.\n - URI_LOCATION: A location address.\n - URI_CALENDAR: A calendar event."
+    },
+    "ioLocalizedString": {
+      "type": "object",
+      "properties": {
+        "translations": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Translations key is a valid LanguageCode. The value represents the translated string."
+        }
+      },
+      "description": "Localized strings are optionally used to provide translated values for each of supported language."
+    },
+    "ioMetaLocation": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": "string",
+          "description": "Country of issue."
+        },
+        "city": {
+          "type": "string",
+          "description": "City of issue."
+        },
+        "state": {
+          "type": "string",
+          "description": "State, region, province or county of issue."
+        },
+        "latitude": {
+          "type": "number",
+          "format": "double",
+          "description": "Latitude of issue (provided in the issue call)."
+        },
+        "longitude": {
+          "type": "number",
+          "format": "double",
+          "description": "Longitude of issue (provided in the issue call)."
+        }
+      }
+    },
+    "ioMetadata": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/ioStatus",
+          "description": "Current status of the pass. Not Writable."
+        },
+        "lifecycleEvents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioLifecycleEvents"
+          },
+          "description": "Events that the pass has attained. Not Writable."
+        },
+        "utm": {
+          "$ref": "#/definitions/ioUTM",
+          "description": "Contains UTM data if provided in the URL parameters (utm_source, utm_medium, utm_name, utm_term, utm_content). Can also be used to track channel (web / app, etc)."
+        },
+        "altId": {
+          "type": "string",
+          "title": "Id of the physical pass. Not Writeable"
+        },
+        "issueIpAddress": {
+          "type": "string",
+          "title": "IP address of the pass issue. Not Writeable"
+        },
+        "installIpAddress": {
+          "type": "string",
+          "description": "IP address of the device where the pass was installed on. Not Writeable."
+        },
+        "renderLocation": {
+          "$ref": "#/definitions/ioMetaLocation",
+          "title": "Location information based of the where the pass landing page was rendered. Not Writeable"
+        },
+        "renderIpAddress": {
+          "type": "string",
+          "description": "IP address of the device where the pass landing page was rendered on. Not Writeable."
+        },
+        "installUserAgent": {
+          "type": "string",
+          "description": "User agent provided by the Wallet Application. Not Writable."
+        },
+        "renderUserAgent": {
+          "type": "string",
+          "description": "User agent where the landing page was rendered on. Not Writable."
+        },
+        "installDeviceAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioDeviceAttributes"
+          },
+          "description": "User agent provided by the Wallet Application. Not Writable."
+        },
+        "renderDeviceAttributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioDeviceAttributes"
+          },
+          "description": "User agent where the landing page was rendered on. Not Writable."
+        },
+        "issueAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date the pass record was created. Not Writable."
+        },
+        "renderedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date the pass was first displayed to the user to install. Not Writable."
+        },
+        "firstInstalledAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date the pass was first installed in a mobile wallet. Not Writable."
+        },
+        "lastInstalledAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date the pass was last installed in a mobile wallet. For Apple devices, this will update each time the device registers a new token. Not Writable."
+        },
+        "firstUninstalledAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date the pass was first uninstalled from a mobile wallet.  For Apple devices, this represents either the time notifications were disabled, or when the pass was removed from the wallet as it is not possible to distinguish the two events. Not Writable."
+        },
+        "lastUninstalledAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date the pass was last uninstalled from a mobile wallet. Not Writable."
+        },
+        "invalidatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date the pass was invalidated. Not Writable."
+        },
+        "lastUpdatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date the pass record was last updated. Can be used for segmenting passes based 'last visit', or 'last-purchase'. Not Writable."
+        }
+      },
+      "description": "Additional data relating to the pass. Metadata can be provided with a create pass request. The only writeable field is UTM. All other fields are system generated."
+    },
+    "ioMetrics": {
+      "type": "object",
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Pass records created."
+        },
+        "appleWalletInstalls": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Number of passes installed in Apple Wallet."
+        },
+        "googlePayInstalls": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Number of passes installed in Google Pay."
+        },
+        "otherAndroidInstalls": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Number of passes installed in Android wallet apps e.g. WalletPasses."
+        },
+        "appleWalletUninstalls": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Number of passes uninstalled from Apple Wallet."
+        },
+        "googlePayUninstalls": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Number of passes uninstalled from Google Pay."
+        },
+        "otherAndroidUninstalls": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Number of passes uninstalled from Android wallet apps e.g. WalletPasses."
+        },
+        "invalidations": {
+          "type": "string",
+          "format": "uint64",
+          "description": "Number of passes invalidated."
+        }
+      },
+      "description": "Metrics list issued, installed, uninstalled and invalidated counts."
+    },
+    "ioOperator": {
+      "type": "string",
+      "enum": [
+        "AND",
+        "OR"
+      ],
+      "default": "AND",
+      "description": " - AND: Join grouped filter fields with AND operator. E.g. tier_id = bronze AND tier_id = silver. The default.\n - OR: Join grouped filter fields with OR operator. E.g. tier_id = bronze OR tier_id = silver."
+    },
+    "ioPassBundle": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The PassKit Id that uniquely references the pass."
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL to the web landing page."
+        },
+        "googlePayURL": {
+          "type": "string",
+          "description": "A URL that can be used in an Android app or email. Note that this is not recommended for web use."
+        },
+        "applePassBytes": {
+          "type": "string",
+          "format": "byte",
+          "description": "The Base64 encoded bytes of the Apple Wallet pass."
+        },
+        "multiplePassesURL": {
+          "type": "string",
+          "description": "A URL for multiple passes, linked by a common index."
+        }
+      },
+      "title": "A Pass Bundle contains a landing page URL and/or a compiled pass in multiple formats"
+    },
+    "ioPassBundleFormat": {
+      "type": "string",
+      "enum": [
+        "PASS_URL",
+        "GOOGLE_URL",
+        "APPLE_PASS_BUNDLE",
+        "MULTI_LINK"
+      ],
+      "default": "PASS_URL",
+      "description": "PassBundleFormat is used to specify which format(s) to provide the pass content.\n\n - PASS_URL: The URL to the web landing page.\n - GOOGLE_URL: A URL that can be used in an Android app or email. Note that this is not recommended for web use.\n - APPLE_PASS_BUNDLE: The Base64 encoded bytes of the Apple Wallet pass bundle.\n - MULTI_LINK: The URL to a landing page for multiple passes containing a common identifier."
+    },
+    "ioPassBundles": {
+      "type": "object",
+      "properties": {
+        "passes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioPassBundle"
+          }
+        }
+      }
+    },
+    "ioPassOverrides": {
+      "type": "object",
+      "properties": {
+        "imageIds": {
+          "$ref": "#/definitions/ioImageIds",
+          "description": "Image ID's of images to override for this pass."
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioGPSLocation"
+          },
+          "description": "A list of up to 10 GPS locations where this pass should be presented on the lock-screen.",
+          "maxItems": 10
+        },
+        "beacons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioBeacon"
+          },
+          "description": "A list of up to 10 Beacon UUIDs that should trigger the pass to be presented on the lock-screen.",
+          "maxItems": 10
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ioLink"
+          },
+          "description": "A list of (personalized) links to be shown on the pass.",
+          "maxItems": 10
+        },
+        "colors": {
+          "$ref": "#/definitions/ioColors",
+          "description": "Stores custom pass colors."
+        },
+        "associatedStoreIdentifiers": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": "A list of iTunes Store item identifiers for the associated apps. Only one item in the list is used — the first item identifier for an app compatible with the user's App Store account and device (hardware/iOS version). If the app is not installed, the link opens the App Store and shows the app. If the app is already installed, the link launches the app."
+        }
+      },
+      "description": "PassOverrides contains optional pass-object level details. Overrides any template level values."
+    },
+    "ioPassProtocol": {
+      "type": "string",
+      "enum": [
+        "PASS_PROTOCOL_DO_NOT_USE",
+        "RAW_PROTOCOL",
+        "V1_PROTOCOL",
+        "FLIGHT_PROTOCOL",
+        "MEMBERSHIP",
+        "SINGLE_USE_COUPON",
+        "EVENT_TICKETING"
+      ],
+      "default": "PASS_PROTOCOL_DO_NOT_USE",
+      "title": "- RAW_PROTOCOL: Reserved for raw pass protocol.\n - V1_PROTOCOL: Reserved for migrating legacy v1 passes.\n - FLIGHT_PROTOCOL: Flights protocol: https://docs.passkit.io/protocols/boarding/\n - MEMBERSHIP: Values 100 onwards are for PassKit generic protocols.\nGeneric Membership protocol: https://docs.passkit.io/protocols/member/\n - SINGLE_USE_COUPON: Single Use Coupon protocol: https://docs.passkit.io/protocols/coupon/\n - EVENT_TICKETING: Event Ticket protocol: https://docs.passkit.io/protocols/event/"
+    },
+    "ioPeriod": {
+      "type": "string",
+      "enum": [
+        "DAY",
+        "MONTH",
+        "YEAR"
+      ],
+      "default": "DAY",
+      "description": " - DAY: Show individual data by day.\n - MONTH: Default response will be in months.\n - YEAR: Show individual data by year."
+    },
+    "ioPerson": {
+      "type": "object",
+      "properties": {
+        "surname": {
+          "type": "string",
+          "description": "Surname / Family name."
+        },
+        "forename": {
+          "type": "string",
+          "description": "Forename / Given name."
+        },
+        "otherNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Other names."
+        },
+        "salutation": {
+          "type": "string",
+          "description": "Salutation or title."
+        },
+        "suffix": {
+          "type": "string",
+          "description": "Suffix. For multiple suffixes, separate with spaces."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "If required, a string representing the user's preferred designation."
+        },
+        "gender": {
+          "$ref": "#/definitions/ioGender",
+          "description": "Gender, as per government issued id."
+        },
+        "dateOfBirth": {
+          "$ref": "#/definitions/ioDate",
+          "description": "Date of birth."
+        },
+        "emailAddress": {
+          "type": "string",
+          "description": "Email address."
+        },
+        "mobileNumber": {
+          "type": "string",
+          "description": "Telephone number. Enter in the format +{countryCode}{telephoneNumber} with no commas, spaces or other delimiters."
+        },
+        "externalId": {
+          "type": "string",
+          "description": "External id. Not editable."
+        },
+        "externalIds": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Ids used for integration purpose. Key is enum of ConfigurationType (e.g. WEBHOOK, DB_MYSQL, ZOHO). Not Writable."
+        }
+      },
+      "description": "A person represents a single, identifiable individual."
+    },
+    "ioProjectStatus": {
+      "type": "string",
+      "enum": [
+        "NO_PROJECT_STATUS",
+        "PROJECT_ACTIVE_FOR_OBJECT_CREATION",
+        "PROJECT_DISABLED_FOR_OBJECT_CREATION",
+        "PROJECT_DRAFT",
+        "PROJECT_PUBLISHED",
+        "PROJECT_PRIVATE",
+        "PROJECT_OVER_QUOTA",
+        "PROJECT_DELETED"
+      ],
+      "default": "NO_PROJECT_STATUS",
+      "description": " - NO_PROJECT_STATUS: Zero based enum, don't use 0.\n - PROJECT_ACTIVE_FOR_OBJECT_CREATION: Active projects allow for creation of records (turned on by default).\n - PROJECT_DISABLED_FOR_OBJECT_CREATION: Disabled projects do not allow for creation of records (i.e. temporarily disable enroling of members / creating of coupons, etc).\n - PROJECT_DRAFT: Default status for all projects. A draft project can do everything a published program can:\nCards can be created, stats will show up, etc.\nData belonging to draft projects is automatically purged every 7 days.\nA draft project uses a PassKit Apple Developer Certificate, and has a PassKit legal disclaimer on the back.\nDraft projects cannot be used for a production setup.\n - PROJECT_PUBLISHED: A project can only be published if a custom Apple Developer Certificate is uploaded, if payment details have been provided,\nand an account email address has been validated.\nPublished projects do not have a PassKit legal disclaimer on the back.\nPublished projects do not have their data purged on a 7 day basis.\n - PROJECT_PRIVATE: A project is private: records can only by created by authorized users / via the portal interface.\n - PROJECT_OVER_QUOTA: The project is currently over quota, and new records cannot be created (set by system only; cannot be set by user)\n - PROJECT_DELETED: A project which needs to be deleted. If delete flag is set, project will be deleted in the near future."
+    },
+    "ioQuota": {
+      "type": "object",
+      "properties": {
+        "details": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ioQuotaDetails"
+          }
+        }
+      }
+    },
+    "ioQuotaDetails": {
+      "type": "object",
+      "properties": {
+        "quota": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "status": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "ioSmsTemplate": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "content of the SMS; needs to be limited to 70 unicode characters. Can contain any of the fields from fields array: ${DISPLAY_NAME}, ${EMAIL_ADDRESS}, etc.",
+          "maxLength": 70
+        },
+        "localizedContent": {
+          "$ref": "#/definitions/ioLocalizedString",
+          "description": "localized content of the SMS; needs to be limited to 70 unicode characters. Can contain any of the fields from fields array: ${DISPLAY_NAME}, ${EMAIL_ADDRESS}, etc.",
+          "maxLength": 70
+        }
+      },
+      "description": "SMS contains details for a sending an sms to customers.\nUses the default PassKit SMS provider and sending credentials."
+    },
+    "ioStatus": {
+      "type": "string",
+      "enum": [
+        "PASS_ISSUED",
+        "PASS_INSTALLED",
+        "PASS_UNINSTALLED",
+        "PASS_INVALIDATED"
+      ],
+      "default": "PASS_ISSUED",
+      "description": "Status is the best determined status of the pass.\n\n - PASS_ISSUED: Pass has been issued.\n - PASS_INSTALLED: Pass has been installed in a wallet.\n - PASS_UNINSTALLED: Pass has been uninstalled (possibly deleted) from a wallet.\n - PASS_INVALIDATED: Pass has been invalidated."
+    },
+    "ioToggle": {
+      "type": "string",
+      "enum": [
+        "DO_NOT_USE",
+        "ON",
+        "OFF"
+      ],
+      "default": "DO_NOT_USE"
+    },
+    "ioUTM": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Use source to identify where the request is coming from. Defaults to Unknown."
+        },
+        "medium": {
+          "type": "string",
+          "description": "Use medium to identify a medium such as email, app, or cost-per-click advertising."
+        },
+        "name": {
+          "type": "string",
+          "description": "Used for keyword analysis. Use campaign to identify a specific product promotion or strategic campaign."
+        },
+        "term": {
+          "type": "string",
+          "description": "Used for paid search. Use term to note the keywords for the ad that led to the pass."
+        },
+        "content": {
+          "type": "string",
+          "description": "Used for A/B testing and content-targeted ads. Use content to differentiate ads or links that point to the same URL."
+        }
+      }
+    },
+    "ioUsageType": {
+      "type": "string",
+      "enum": [
+        "NO_USAGE",
+        "USAGE_APPLE_WALLET",
+        "USAGE_GOOGLE_PAY",
+        "USAGE_DATA_COLLECTION_PAGE"
+      ],
+      "default": "NO_USAGE",
+      "description": "- USAGE_APPLE_WALLET: Rendered on Apple Wallet\n - USAGE_GOOGLE_PAY: Rendered on Google Pay\n - USAGE_DATA_COLLECTION_PAGE: Rendered on data collection page",
+      "title": "UsageType is used to indicate where a field or link is used / rendered"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    }
+  },
+  "securityDefinitions": {
+    "apiKeyAuth": {
+      "type": "apiKey",
+      "description": "JWT Authentication token.",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "apiKeyAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://api.pub1.passkit.io/",
+      "description": "Production Environment"
+    }
+  ]
+}
