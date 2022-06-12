@@ -1,8 +1,13 @@
 const functions = require("firebase-functions");
 const express = require('express');
-const cors = require('cors')({origin: '*'})
+const cors = require('cors')({origin: '*'});
 
-const {getDID, issueVerifiableCredential} = require('./lib/mattr');
+const {
+    getDID,
+    issueVerifiableCredential,
+    createDIDMessage,
+    encryptDIDMessage,
+    sendDIDMessage} = require('./lib/mattr');
 
 const app = express();
 app.use(cors);
@@ -19,6 +24,23 @@ app.post('/issue-credential', async (req, res) => {
     let credential = await issueVerifiableCredential(subjectDID, type, claims);
 
     res.status(200).send(credential);
+})
+
+app.post('/offer-credential', async (req, res) => {
+    // Note: SubjectDid must be registered with a Mattr mobile wallet
+    // to successfully offer credential
+    let credential = req.body?.credential;
+    let subjectDID = credential?.credentialSubject?.id;
+
+    let DIDMessage = createDIDMessage(credential);
+
+    let encryptedMessage = await encryptDIDMessage(DIDMessage);
+
+    await sendDIDMessage(subjectDID, encryptedMessage);
+
+    res.status(200).send({
+        status: "message sent"
+    })
 })
 
 exports.app = functions.https.onRequest(app);
