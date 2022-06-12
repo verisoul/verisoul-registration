@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zesty-elf-e94099.netlify.app/sitemap-index.xml
